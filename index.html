@@ -417,16 +417,20 @@
       </section>
     );
 
-    const SpeakerCard = ({ name, role }) => (
+    const SpeakerCard = ({ name, role, bio, image, twitter }) => (
       <div className="flex flex-col items-center text-center gap-3">
-        <div className="w-36 h-36 rounded-full bg-stone-200 flex items-center justify-center text-stone-400">
-          <svg className="w-14 h-14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-          </svg>
+        <div className="w-36 h-36 rounded-full bg-stone-200 flex items-center justify-center text-stone-400 overflow-hidden">
+          {image ? <img src={image} alt={name} className="w-full h-full object-cover" /> : (
+            <svg className="w-14 h-14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+          )}
         </div>
         <div>
           <p className="font-medium text-stone-900">{name}</p>
+          {bio && <p className="text-sm text-stone-500 mt-0.5">{bio}</p>}
           <p className="text-sm text-stone-500 mt-0.5">{role}</p>
+          {twitter && <a href={twitter} target="_blank" rel="noopener" className="inline-block mt-2 text-stone-400 hover:text-stone-600 transition-colors"><svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>}
         </div>
       </div>
     );
@@ -438,7 +442,7 @@
           <h2 className="text-5xl md:text-6xl text-stone-900 mb-16" style={customStyles.editorialFont}>Speakers</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-10">
             <SpeakerCard name="TBA" role="Opening Keynote" />
-            <SpeakerCard name="TBA" role="Fireside Chat I — AI × Crypto" />
+            <SpeakerCard name="Ishika" bio="Product @ Morphic" role="Fireside Chat I — AI × Crypto" twitter="https://x.com/IshikaMukerji" />
             <SpeakerCard name="TBA" role="Fireside Chat II — VC View" />
             <SpeakerCard name="TBA" role="Round Table" />
           </div>
