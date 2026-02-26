@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AGNT'Con ft. aiweekends x Inner Circle</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+  <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel" data-presets="react">
+    const { useState, useEffect, useRef } = React;
+
+    const customStyles = {
+      body: {
+        fontFamily: "'Inter', sans-serif",
+        backgroundColor: '#faf7f2',
+        color: '#1c1917',
+        overflowX: 'hidden',
+      },
+      heroCanvasContainer: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        zIndex: 0,
+        overflow: 'hidden',
+      },
+      editorialFont: {
+        fontFamily: "'PixelFamily', 'Instrument Serif', serif",
+      },
+    };
+
+    const ThreeCanvas = () => {
+      const containerRef = useRef(null);
+      useEffect(() => {
+        const loadAndInit = () => {
+          if (!window.THREE) {
+            setTimeout(loadAndInit, 200);
+            return;
+          }
+          const THREE = window.THREE;
+          const container = containerRef.current;
+          if (!container) return;
+          const scene = new THREE.Scene();
+          scene.background = new THREE.Color(0xfaf7f2);
+          scene.fog = new THREE.Fog(0xfaf7f2, 10, 50);
+          const camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 1000);
+          const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+          renderer.setSize(window.innerWidth, window.innerHeight);
+          renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+          renderer.shadowMap.enabled = true;
+          renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+          container.appendChild(renderer.domElement);
+          const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+          scene.add(ambientLight);
+          const dirLight = new THREE.DirectionalLight(0xffaa88, 1.2);
+          dirLight.position.set(5, 10, 7);
+          dirLight.castShadow = true;
+          dirLight.shadow.mapSize.width = 1024;
+          dirLight.shadow.mapSize.height = 1024;
+          dirLight.shadow.bias = -0.001;
+          scene.add(dirLight);
+          const rimLight = new THREE.DirectionalLight(0x88ccff, 0.4);
+          rimLight.position.set(-5, 5, -5);
+          scene.add(rimLight);
+          const fillLight = new THREE.PointLight(0xffaa00, 0.3);
+          fillLight.position.set(-5, 0, 5);
+          scene.add(fillLight);
+          const lobsterGroup = new THREE.Group();
+          const shellMaterial = new THREE.MeshPhysicalMaterial({ color: 0xe84030, roughness: 0.15, metalness: 0.15, clearcoat: 0.5, clearcoatRoughness: 0.1 });
+          const darkMaterial = new THREE.MeshStandardMaterial({ color: 0x7a1a1a, roughness: 0.4, metalness: 0.1 });
+          const underMaterial = new THREE.MeshPhysicalMaterial({ color: 0xff8866, roughness: 0.3, metalness: 0.05 });
+          const bodyGeo = new THREE.CylinderGeometry(0.8, 1.2, 3.5, 32);
+          const body = new THREE.Mesh(bodyGeo, shellMaterial);
+          body.rotation.x = Math.PI / 2;
+          body.castShadow = true;
+          body.receiveShadow = true;
+          lobsterGroup.add(body);
+          const headGeo = new THREE.ConeGeometry(0.8, 2, 32);
+          const head = new THREE.Mesh(headGeo, shellMaterial);
+          head.rotation.x = -Math.PI / 2;
+          head.position.z = 2.75;
+          head.castShadow = true;
+          head.receiveShadow = true;
+          lobsterGroup.add(head);
+          const tailGroup = new THREE.Group();
+          tailGroup.position.z = -2;
+          for (let i = 0; i < 5; i++) {
+            const sWidth = 1.1 - i * 0.15;
+            const segGeo = new THREE.CylinderGeometry(sWidth, sWidth, 0.8, 32, 1, false, 0, Math.PI * 2);
+            const seg = new THREE.Mesh(segGeo, shellMaterial);
+            seg.rotation.x = Math.PI / 2;
+            seg.position.z = -(i * 0.6);
+            seg.position.y = -(i * 0.15);
+            seg.rotation.x = Math.PI / 2 + i * 0.1;
+            seg.castShadow = true;
+            seg.receiveShadow = true;
+            tailGroup.add(seg);
+          }
+          const fanGeo = new THREE.CylinderGeometry(0.8, 0.1, 1, 6);
+          const fan = new THREE.Mesh(fanGeo, shellMaterial);
+          fan.scale.z = 0.2;
+          fan.position.z = -3.2;
+          fan.position.y = -0.8;
+          fan.rotation.x = Math.PI / 1.5;
+          fan.castShadow = true;
+          tailGroup.add(fan);
+          lobsterGroup.add(tailGroup);
+          function createClaw(isRight, sizeScale) {
+            const armGroup = new THREE.Group();
+            const side = isRight ? 1 : -1;
+            const shoulderGeo = new THREE.SphereGeometry(0.6 * sizeScale, 16, 16);
+            const shoulder = new THREE.Mesh(shoulderGeo, shellMaterial);
+            shoulder.position.set(side * 1.2, 0, 1.5);
+            armGroup.add(shoulder);
+            const armGeo = new THREE.CylinderGeometry(0.3 * sizeScale, 0.4 * sizeScale, 2, 16);
+            const arm = new THREE.Mesh(armGeo, shellMaterial);
+            arm.position.set(side * 2, 0, 2.5);
+            arm.rotation.z = -side * 0.5;
+            arm.rotation.x = 1.2;
+            arm.castShadow = true;
+            armGroup.add(arm);
+            const handCylGeo = new THREE.CylinderGeometry(0.8 * sizeScale, 0.6 * sizeScale, 2.5 * sizeScale, 16);
+            const hand = new THREE.Mesh(handCylGeo, shellMaterial);
+            hand.scale.x = 1.5;
+            hand.position.set(side * 2.8, 0, 4.2);
+            hand.rotation.x = 1.5;
+            hand.rotation.z = -side * 0.2;
+            hand.castShadow = true;
+            armGroup.add(hand);
+            const pincerGeo = new THREE.ConeGeometry(0.3 * sizeScale, 1.5 * sizeScale, 16);
+            const pincer1 = new THREE.Mesh(pincerGeo, darkMaterial);
+            pincer1.position.set(side * 2.5, 0, 5.5);
+            pincer1.rotation.x = 1.5;
+            pincer1.rotation.z = side * 0.3;
+            armGroup.add(pincer1);
+            const pincer2 = new THREE.Mesh(pincerGeo, darkMaterial);
+            pincer2.position.set(side * 3.1, 0, 5.5);
+            pincer2.rotation.x = 1.5;
+            pincer2.rotation.z = -side * 0.3;
+            armGroup.add(pincer2);
+            return armGroup;
+          }
+          const leftClaw = createClaw(false, 1.2);
+          const rightClaw = createClaw(true, 0.9);
+          lobsterGroup.add(leftClaw);
+          lobsterGroup.add(rightClaw);
+          for (let i = 0; i < 4; i++) {
+            const legGeo = new THREE.CylinderGeometry(0.1, 0.1, 3, 8);
+            const legR = new THREE.Mesh(legGeo, shellMaterial);
+            legR.position.set(1.5, -0.5, 1 - i * 0.8);
+            legR.rotation.z = 1;
+            legR.rotation.x = 0.5;
+            lobsterGroup.add(legR);
+            const legL = new THREE.Mesh(legGeo, shellMaterial);
+            legL.position.set(-1.5, -0.5, 1 - i * 0.8);
+            legL.rotation.z = -1;
+            legL.rotation.x = 0.5;
+            lobsterGroup.add(legL);
+          }
+          // Eye stalks
+          const stalkGeo = new THREE.CylinderGeometry(0.06, 0.08, 0.8, 8);
+          const stalkL = new THREE.Mesh(stalkGeo, shellMaterial);
+          stalkL.position.set(-0.35, 0.9, 3.0);
+          stalkL.rotation.x = -0.3;
+          stalkL.rotation.z = -0.15;
+          lobsterGroup.add(stalkL);
+          const stalkR = new THREE.Mesh(stalkGeo, shellMaterial);
+          stalkR.position.set(0.35, 0.9, 3.0);
+          stalkR.rotation.x = -0.3;
+          stalkR.rotation.z = 0.15;
+          lobsterGroup.add(stalkR);
+          const eyeGeo = new THREE.SphereGeometry(0.15, 16, 16);
+          const eyeMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.1, metalness: 0.3 });
+          const eyeWhiteGeo = new THREE.SphereGeometry(0.12, 16, 16);
+          const eyeWhiteMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.3 });
+          const eyeL = new THREE.Mesh(eyeGeo, eyeMat);
+          eyeL.position.set(-0.4, 1.2, 3.3);
+          lobsterGroup.add(eyeL);
+          const eyeWhiteL = new THREE.Mesh(eyeWhiteGeo, eyeWhiteMat);
+          eyeWhiteL.position.set(-0.38, 1.25, 3.4);
+          eyeWhiteL.scale.set(0.4, 0.4, 0.4);
+          lobsterGroup.add(eyeWhiteL);
+          const eyeR = new THREE.Mesh(eyeGeo, eyeMat);
+          eyeR.position.set(0.4, 1.2, 3.3);
+          lobsterGroup.add(eyeR);
+          const eyeWhiteR = new THREE.Mesh(eyeWhiteGeo, eyeWhiteMat);
+          eyeWhiteR.position.set(0.38, 1.25, 3.4);
+          eyeWhiteR.scale.set(0.4, 0.4, 0.4);
+          lobsterGroup.add(eyeWhiteR);
+          const antGeo = new THREE.CylinderGeometry(0.02, 0.05, 8, 8);
+          const antL = new THREE.Mesh(antGeo, shellMaterial);
+          antL.position.set(-0.5, 1, 5);
+          antL.rotation.x = 1.2;
+          antL.rotation.z = -0.3;
+          lobsterGroup.add(antL);
+          const antR = new THREE.Mesh(antGeo, shellMaterial);
+          antR.position.set(0.5, 1, 5);
+          antR.rotation.x = 1.2;
+          antR.rotation.z = 0.3;
+          lobsterGroup.add(antR);
+          lobsterGroup.rotation.x = -Math.PI / 6;
+          lobsterGroup.rotation.y = Math.PI;
+          lobsterGroup.position.y = 3;
+          scene.add(lobsterGroup);
+          camera.position.z = 14;
+          camera.position.y = 4;
+          camera.lookAt(0, 3, 0);
+          let time = 0;
+          let animFrameId;
+          const baseRotY = Math.PI;
+          const animate = () => {
+            animFrameId = requestAnimationFrame(animate);
+            time += 0.008;
+            // Steady turntable rotation
+            lobsterGroup.rotation.y = baseRotY + time * 0.15;
+            // Gentle breathing float
+            lobsterGroup.position.y = 3 + Math.sin(time * 0.8) * 0.15;
+            // Subtle antenna sway
+            antL.rotation.z = -0.3 + Math.sin(time * 1.5) * 0.08;
+            antR.rotation.z = 0.3 + Math.cos(time * 1.5) * 0.08;
+            // Gentle claw bob
+            leftClaw.position.y = Math.sin(time * 1.2) * 0.05;
+            rightClaw.position.y = Math.sin(time * 1.2 + 1) * 0.05;
+            renderer.render(scene, camera);
+          };
+          animate();
+          const handleResize = () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+          };
+          window.addEventListener('resize', handleResize);
+          return () => {
+            cancelAnimationFrame(animFrameId);
+            window.removeEventListener('resize', handleResize);
+            if (container && renderer.domElement && container.contains(renderer.domElement)) {
+              container.removeChild(renderer.domElement);
+            }
+            renderer.dispose();
+          };
+        };
+        const cleanup = loadAndInit();
+        return () => { if (typeof cleanup === 'function') cleanup(); };
+      }, []);
+      return <div ref={containerRef} style={customStyles.heroCanvasContainer} />;
+    };
+
+
+
+    const Navbar = () => {
+      const scrollTo = (id) => {
+        const el = document.getElementById(id);
+        if (el) {
+          const offset = 56;
+          const top = el.getBoundingClientRect().top + window.scrollY - offset;
+          window.scrollTo({ top, behavior: 'smooth' });
+        }
+      };
+      return (
+        <nav style={{position:'fixed',top:0,left:0,right:0,zIndex:50}} className="w-full bg-[#faf7f2]/90 backdrop-blur-md border-b border-stone-200/60">
+          <div className="max-w-[1400px] mx-auto px-6 flex items-center justify-between h-14">
+            <span className="text-stone-900 font-bold text-lg tracking-tighter" style={customStyles.editorialFont}>ClawCon '26</span>
+            <div className="flex items-center gap-6">
+              <button onClick={() => scrollTo('about')} className="hidden md:block text-sm text-stone-500 hover:text-stone-900 transition-colors">About</button>
+              <button onClick={() => scrollTo('speakers')} className="hidden md:block text-sm text-stone-500 hover:text-stone-900 transition-colors">Speakers</button>
+              <button onClick={() => scrollTo('schedule')} className="hidden md:block text-sm text-stone-500 hover:text-stone-900 transition-colors">Schedule</button>
+              <button onClick={() => scrollTo('apply')} className="text-sm bg-orange-600 hover:bg-orange-700 text-white px-4 py-1.5 rounded-full transition-colors">Apply</button>
+            </div>
+          </div>
+        </nav>
+      );
+    };
+
+    const HeroSection = () => (
+      <div>
+        {/* 3D canvas — pure visual, no text overlay */}
+        <div className="relative w-full overflow-hidden" style={{height:'45vh'}}>
+          <ThreeCanvas />
+          <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#faf7f2] to-transparent pointer-events-none" style={{zIndex:1}} />
+        </div>
+
+        {/* Text content — cleanly below the 3D */}
+        <div className="bg-[#faf7f2] text-center px-6 pt-2 pb-16">
+          {/* <div className="flex justify-center mb-5">
+            <span className="inline-flex items-center gap-2 text-orange-600 text-xs font-semibold uppercase tracking-widest">
+              <span className="w-1.5 h-1.5 bg-orange-600 rounded-full animate-pulse inline-block"></span>
+              Applications Open · Limited Capacity
+            </span>
+          </div> */}
+          <div className="flex flex-col items-center mb-6">
+            <div className="flex items-center justify-center gap-3">
+              <img src="/logo1.svg" style={{height:'28px',width:'auto'}} alt="AI Weekends" />
+              <span className="text-stone-400 text-lg font-medium">×</span>
+              <img src="/ic-logo.svg" style={{height:'20px',width:'auto'}} alt="Inner Circle" />
+            </div>
+            <span className="text-stone-400 text-sm tracking-widest mt-2">Presents</span>
+          </div>
+          <h1 className="text-7xl md:text-9xl lg:text-[10rem] leading-[0.85] font-normal text-stone-900 mb-4" style={customStyles.editorialFont}>
+            AGNT'Con
+          </h1>
+          <div className="flex items-center justify-center gap-3 mb-8 flex-wrap">
+            <span className="text-stone-400 text-base">📍</span>
+            <img src="/machete-logo.svg" style={{height:'22px',width:'auto',opacity:0.45}} alt="Machete" />
+            <span className="text-lg md:text-xl text-stone-500">Bangalore · March 08, 2026</span>
+          </div>
+          <div className="flex justify-center mb-16">
+            <a href="#apply" onClick={(e) => { e.preventDefault(); const el = document.getElementById('apply'); if(el){ const top = el.getBoundingClientRect().top + window.scrollY - 56; window.scrollTo({top, behavior:'smooth'}); }}} className="inline-flex items-center gap-2 bg-orange-600 hover:bg-orange-500 text-white px-8 py-3.5 rounded-full text-base font-medium transition-all duration-300 hover:scale-105 group" style={{boxShadow:'0 0 30px -8px rgba(234,88,12,0.4)'}}>
+              Apply to Attend
+              <svg className="w-4 h-4 transform group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 17L17 7M17 7H7M17 7V17" />
+              </svg>
+            </a>
+          </div>
+          <div className="w-full overflow-hidden" style={{maskImage:'linear-gradient(to right, transparent, black 15%, black 85%, transparent)', WebkitMaskImage:'linear-gradient(to right, transparent, black 15%, black 85%, transparent)'}}>
+            <div className="marquee-track flex gap-20 items-center whitespace-nowrap" style={{animation:'marquee 28s linear infinite'}}>
+              {[
+                { src:'https://growthx.club/_next_public/logo/growthx-light-mode.svg', name:'GrowthX', h:'32px' },
+                { src:'/machete-logo.svg', name:'Machete', h:'28px' },
+                { src:'https://raw.githubusercontent.com/base/brand-kit/main/logo/Basemark/Digital/Base_basemark_blue.svg', name:'Base', h:'44px' },
+                { src:'https://assets.emergent.sh/assets/emergent-logo-new.svg', name:'Emergent', h:'32px', invert:true },
+                { src:'/partner-new.svg', name:'Partner', h:'36px', invert:true },
+                { src:'https://growthx.club/_next_public/logo/growthx-light-mode.svg', name:'GrowthX', h:'32px' },
+                { src:'/machete-logo.svg', name:'Machete', h:'28px' },
+                { src:'https://raw.githubusercontent.com/base/brand-kit/main/logo/Basemark/Digital/Base_basemark_blue.svg', name:'Base', h:'44px' },
+                { src:'https://assets.emergent.sh/assets/emergent-logo-new.svg', name:'Emergent', h:'32px', invert:true },
+                { src:'/partner-new.svg', name:'Partner', h:'36px', invert:true },
+              ].map((p, i) => (
+                <img key={i} src={p.src} alt={p.name} className={`${p.invert ? 'partner-logo-invert' : 'partner-logo'} flex-shrink-0`} style={{height:p.h, width:'auto'}} />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+
+    const IntroSection = () => {
+      const scrollTo = (id) => {
+        const el = document.getElementById(id);
+        if (el) {
+          const top = el.getBoundingClientRect().top + window.scrollY - 56;
+          window.scrollTo({ top, behavior: 'smooth' });
+        }
+      };
+      return (
+        <section className="py-24 md:py-32 px-6 bg-[#faf7f2] text-center">
+          <div className="max-w-2xl mx-auto">
+            <p className="text-xl md:text-2xl leading-relaxed text-stone-700 mb-10">
+              Where the people building the agent economy meet the agents they've built. One curated evening. Keynotes, live agent competitions, and conversations that don't happen at regular conferences.
+            </p>
+            <div className="flex flex-wrap justify-center gap-3 mb-10">
+              <span className="px-4 py-1.5 bg-stone-100 border border-stone-200 rounded-full text-sm text-stone-600">March 08</span>
+              <span className="px-4 py-1.5 bg-stone-100 border border-stone-200 rounded-full text-sm text-stone-600">Bangalore</span>
+              <span className="px-4 py-1.5 bg-stone-100 border border-stone-200 rounded-full text-sm text-stone-600">5 Hours</span>
+              <span className="px-4 py-1.5 bg-stone-100 border border-stone-200 rounded-full text-sm text-stone-600">100 Builders</span>
+            </div>
+            <button
+              onClick={() => scrollTo('apply')}
+              className="inline-flex items-center gap-2 bg-orange-600 hover:bg-orange-700 text-white px-10 py-4 rounded-full text-lg font-medium transition-colors duration-300 shadow-lg shadow-orange-900/10 group"
+            >
+              Apply to Attend
+              <svg className="w-5 h-5 transform group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 17L17 7M17 7H7M17 7V17" />
+              </svg>
+            </button>
+          </div>
+        </section>
+      );
+    };
+
+    const StatCard = ({ value, label }) => (
+      <div className="bg-white p-8 md:p-10 flex flex-col items-center text-center hover:bg-stone-50 transition-colors">
+        <span className="text-4xl md:text-5xl font-bold text-stone-900 mb-2">{value}</span>
+        <span className="text-sm text-stone-500 font-medium uppercase tracking-wide">{label}</span>
+      </div>
+    );
+
+    const AboutSection = () => (
+      <section id="about" className="py-24 px-6 bg-[#faf7f2] text-center">
+        <div className="max-w-2xl mx-auto mb-8">
+          <h2 className="text-5xl md:text-6xl text-stone-900 leading-tight mb-8" style={customStyles.editorialFont}>
+            Built by builders.<br />
+            <span className="text-stone-400 italic">For the agent economy.</span>
+          </h2>
+          <p className="text-lg text-stone-600 leading-relaxed mb-4">
+            AI Weekends and Inner Circle are building ClawCon together. AI Weekends runs weekend co-builds where builders ship real ideas — no tutorials, no courses, just output. Inner Circle is home to 10,000+ founders, engineers, and creators globally who've each other's backs at the intersection of AI and onchain.
+          </p>
+          <p className="text-lg text-stone-600 leading-relaxed">
+            Two communities. One shared obsession. Together, we've sent 30+ agents live, rewarded $6K through Clawd Kitchen, and built the room where the real work happens. ClawCon is where both worlds collide — IRL.
+          </p>
+        </div>
+      </section>
+    );
+
+    const SpeakerCard = ({ name, role }) => (
+      <div className="flex flex-col items-center text-center gap-3">
+        <div className="w-36 h-36 rounded-full bg-stone-200 flex items-center justify-center text-stone-400">
+          <svg className="w-14 h-14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+        </div>
+        <div>
+          <p className="font-medium text-stone-900">{name}</p>
+          <p className="text-sm text-stone-500 mt-0.5">{role}</p>
+        </div>
+      </div>
+    );
+
+    const SpeakersSection = () => (
+      <section id="speakers" className="pt-12 pb-24 px-6 bg-[#faf7f2] text-center">
+        <div className="max-w-4xl mx-auto">
+          <span className="block text-orange-600 font-medium tracking-wide mb-2 uppercase text-sm">Line Up</span>
+          <h2 className="text-5xl md:text-6xl text-stone-900 mb-16" style={customStyles.editorialFont}>Speakers</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-10">
+            <SpeakerCard name="TBA" role="Opening Keynote" />
+            <SpeakerCard name="TBA" role="Fireside Chat I — AI × Crypto" />
+            <SpeakerCard name="TBA" role="Fireside Chat II — VC View" />
+            <SpeakerCard name="TBA" role="Round Table" />
+          </div>
+        </div>
+      </section>
+    );
+
+    const PartnersSection = () => (
+      <section id="partners" className="py-20 px-6 bg-stone-100 text-center">
+        <div className="max-w-4xl mx-auto">
+          <span className="block text-stone-400 font-medium tracking-wide mb-10 uppercase text-sm">Partners & Sponsors</span>
+          <div className="flex flex-wrap justify-center items-center gap-10">
+            {[1,2,3,4,5].map(i => (
+              <div key={i} className="w-32 h-10 bg-stone-300/60 rounded-lg" />
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+
+    const ScheduleItem = ({ time, title, description }) => (
+      <div className="group py-8 border-b border-stone-300 grid grid-cols-1 md:grid-cols-12 gap-4 items-start hover:bg-stone-200/50 transition-colors px-4 -mx-4 rounded-lg">
+        <div className="md:col-span-3 font-mono text-stone-500 pt-1">{time}</div>
+        <div className="md:col-span-9">
+          <h3 className="text-2xl font-medium text-stone-900 mb-2">{title}</h3>
+          <p className="text-stone-600">{description}</p>
+        </div>
+      </div>
+    );
+
+    const ScheduleSection = () => {
+      const items = [
+        { time: '4:00 PM', title: 'Doors Open', description: 'Everyone arrives, hang around — catch up with each other building in AI.' },
+        { time: '4:30 PM', title: 'Opening Keynote', description: 'TBD Partner, to speak about how AI space is scaling fast.' },
+        { time: '5:00 PM', title: 'Fireside Chat I — AI × Crypto', description: 'Where agent infrastructure and onchain primitives collide.' },
+        { time: '5:45 PM', title: 'Fireside Chat II — The VC View', description: 'What serious investors are betting on in the agent economy.' },
+        { time: '6:45 PM', title: 'Demo Day by GrowthX', description: 'Deep conversation between builders, founders, and investors. No slide decks.' },
+        { time: '7:30 PM', title: 'Live Agent Trading Battle', description: 'Builders live trade and compete with each other.' },
+        { time: '8:00 PM', title: 'Builder Mixer', description: 'Open floor. No agenda. The real conversations happen here.' },
+      ];
+      return (
+        <section id="schedule" className="pt-6 pb-24 px-6 bg-[#faf7f2]">
+          <div className="max-w-[1000px] mx-auto">
+            <div className="text-center mb-16">
+              <span className="block text-orange-600 font-medium tracking-wide mb-2 uppercase text-sm">Program Schedule</span>
+              <h2 className="text-5xl md:text-6xl text-stone-900" style={customStyles.editorialFont}>The Evening</h2>
+            </div>
+            <div className="border-t border-stone-300">
+              {items.map((item, i) => (
+                <ScheduleItem key={i} time={item.time} title={item.title} description={item.description} />
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    };
+
+    const FeatureCard = ({ icon, title, description }) => (
+      <div className="bg-white p-10 rounded-2xl border border-stone-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+        <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mb-6 text-orange-600">
+          {icon}
+        </div>
+        <h3 className="text-2xl mb-3 text-stone-900" style={customStyles.editorialFont}>{title}</h3>
+        <p className="text-stone-600 leading-relaxed">{description}</p>
+      </div>
+    );
+
+    const FeaturesSection = () => {
+      const features = [
+        {
+          title: 'Curated Attendance',
+          description: "We manually review every application. You'll be in a room with CTOs, lead maintainers of major open source projects, and founders.",
+          icon: (<svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>),
+        },
+        {
+          title: 'Live Deployments',
+          description: 'Talk is cheap. Presenters are required to show live code or deployments. No pre-recorded videos allowed.',
+          icon: (<svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>),
+        },
+        {
+          title: 'Zero-BS Networking',
+          description: 'Structured networking sessions designed to help you find collaborators, not just exchange business cards.',
+          icon: (<svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>),
+        },
+        {
+          title: 'Agent Battle on Polymarket',
+          description: "Agents compete on Polymarket prediction markets in real time. Live leaderboard projected for all 100 builders. Real money. Real stakes.",
+          icon: (<svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>),
+        },
+      ];
+      return (
+        <section id="features" className="py-24 px-6 bg-[#faf7f2]">
+          <div className="max-w-[1400px] mx-auto">
+            <div className="max-w-2xl mx-auto text-center mb-16">
+              <h2 className="text-5xl md:text-6xl text-stone-900 mb-6" style={customStyles.editorialFont}>What Makes ClawCon Different</h2>
+              <p className="text-xl text-stone-600">We stripped away the fluff. No vendor booths, no sales pitches. Just pure engineering and vision.</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {features.map((f, i) => (
+                <FeatureCard key={i} icon={f.icon} title={f.title} description={f.description} />
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    };
+
+    const ApplySection = () => {
+      const [clicked, setClicked] = useState(false);
+      const handleApply = () => {
+        setClicked(true);
+        setTimeout(() => setClicked(false), 2000);
+      };
+      return (
+        <section id="apply" className="py-32 px-6 bg-stone-900 text-[#faf7f2] relative overflow-hidden">
+          <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/cubes.png')" }} />
+          <div className="max-w-4xl mx-auto text-center relative z-10">
+            <h2 className="text-6xl md:text-8xl mb-8" style={customStyles.editorialFont}>Ready to Join?</h2>
+            <p className="text-xl md:text-2xl text-stone-400 mb-12 font-light">
+              Spaces are extremely limited. Applications are reviewed on a rolling basis.
+            </p>
+            <button
+              onClick={handleApply}
+              className="bg-orange-600 hover:bg-orange-500 text-white px-12 py-6 rounded-full text-xl font-medium transition-all duration-300 hover:scale-105"
+              style={{ boxShadow: '0 0 40px -10px rgba(234,88,12,0.5)' }}
+            >
+              {clicked ? 'Application Submitted! ✓' : 'Apply Now'}
+            </button>
+          </div>
+          <div className="mt-24 pt-8 border-t border-stone-800 text-center text-stone-500 text-sm">
+            <span>Presented by <a href="https://x.com/aiweekendsxyz" target="_blank" rel="noopener noreferrer" style={{cursor:'pointer',position:'relative',zIndex:10}} className="underline hover:text-stone-300 transition-colors">AI Weekends</a> × <a href="https://x.com/innercircle_so" target="_blank" rel="noopener noreferrer" style={{cursor:'pointer',position:'relative',zIndex:10}} className="underline hover:text-stone-300 transition-colors">Inner Circle</a> · Bangalore, India</span>
+          </div>
+        </section>
+      );
+    };
+
+    const HomePage = () => (
+      <div style={customStyles.body}>
+        {/* <Navbar /> */}
+        <HeroSection />
+        <AboutSection />
+        <ScheduleSection />
+        <SpeakersSection />
+        <ApplySection />
+      </div>
+    );
+
+    const App = () => {
+      useEffect(() => {
+        const style = document.createElement('style');
+        style.textContent = `
+          @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&display=swap');
+          @font-face {
+            font-family: 'PixelFamily';
+            src: url('/fonts/thatthatnewpixelfamilytest-square.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+          }
+          @font-face {
+            font-family: 'PixelFamily';
+            src: url('/fonts/thatthatnewpixelfamilytest-italicsquare.otf') format('opentype');
+            font-weight: normal;
+            font-style: italic;
+          }
+          body {
+            font-family: 'Inter', sans-serif;
+            background-color: #faf7f2;
+            color: #1c1917;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+          }
+          ::selection { background-color: #fed7aa; color: #7c2d12; }
+          ::-webkit-scrollbar { width: 8px; }
+          ::-webkit-scrollbar-track { background: #faf7f2; }
+          ::-webkit-scrollbar-thumb { background: #e7e5e4; border-radius: 4px; }
+          ::-webkit-scrollbar-thumb:hover { background: #d6d3d1; }
+          @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+          .partner-logo { filter: grayscale(100%); opacity: 0.5; transition: filter 0.3s ease, opacity 0.3s ease; }
+          .partner-logo:hover { filter: grayscale(0%); opacity: 1; }
+          .partner-logo-invert { filter: invert(1) grayscale(100%); opacity: 0.5; transition: filter 0.3s ease, opacity 0.3s ease; }
+          .partner-logo-invert:hover { filter: invert(1); opacity: 1; }
+          .marquee-track:hover { animation-play-state: paused; }
+        `;
+        document.head.appendChild(style);
+        const threeScript = document.createElement('script');
+        threeScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+        threeScript.async = true;
+        document.head.appendChild(threeScript);
+        return () => { document.head.removeChild(style); };
+      }, []);
+      return <HomePage />;
+    };
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
