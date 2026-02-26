@@ -283,7 +283,7 @@
               <button onClick={() => scrollTo('about')} className="hidden md:block text-sm text-stone-500 hover:text-stone-900 transition-colors">About</button>
               <button onClick={() => scrollTo('speakers')} className="hidden md:block text-sm text-stone-500 hover:text-stone-900 transition-colors">Speakers</button>
               <button onClick={() => scrollTo('schedule')} className="hidden md:block text-sm text-stone-500 hover:text-stone-900 transition-colors">Schedule</button>
-              <button onClick={() => scrollTo('apply')} className="text-sm bg-orange-600 hover:bg-orange-700 text-white px-4 py-1.5 rounded-full transition-colors">Apply</button>
+              <a href="https://luma.com/0gm0ouf3" target="_blank" rel="noopener" className="text-sm bg-orange-600 hover:bg-orange-700 text-white px-4 py-1.5 rounded-full transition-colors">Apply</a>
             </div>
           </div>
         </nav>
@@ -323,7 +323,7 @@
             <span className="text-lg md:text-xl text-stone-500">Bangalore · March 08, 2026</span>
           </div>
           <div className="flex justify-center mb-16">
-            <a href="#apply" onClick={(e) => { e.preventDefault(); const el = document.getElementById('apply'); if(el){ const top = el.getBoundingClientRect().top + window.scrollY - 56; window.scrollTo({top, behavior:'smooth'}); }}} className="inline-flex items-center gap-2 bg-orange-600 hover:bg-orange-500 text-white px-8 py-3.5 rounded-full text-base font-medium transition-all duration-300 hover:scale-105 group" style={{boxShadow:'0 0 30px -8px rgba(234,88,12,0.4)'}}>
+            <a href="https://luma.com/0gm0ouf3" target="_blank" rel="noopener" className="inline-flex items-center gap-2 bg-orange-600 hover:bg-orange-500 text-white px-8 py-3.5 rounded-full text-base font-medium transition-all duration-300 hover:scale-105 group" style={{boxShadow:'0 0 30px -8px rgba(234,88,12,0.4)'}}>
               Apply to Attend
               <svg className="w-4 h-4 transform group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 17L17 7M17 7H7M17 7V17" />
@@ -372,15 +372,15 @@
               <span className="px-4 py-1.5 bg-stone-100 border border-stone-200 rounded-full text-sm text-stone-600">5 Hours</span>
               <span className="px-4 py-1.5 bg-stone-100 border border-stone-200 rounded-full text-sm text-stone-600">100 Builders</span>
             </div>
-            <button
-              onClick={() => scrollTo('apply')}
+            <a
+              href="https://luma.com/0gm0ouf3" target="_blank" rel="noopener"
               className="inline-flex items-center gap-2 bg-orange-600 hover:bg-orange-700 text-white px-10 py-4 rounded-full text-lg font-medium transition-colors duration-300 shadow-lg shadow-orange-900/10 group"
             >
               Apply to Attend
               <svg className="w-5 h-5 transform group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 17L17 7M17 7H7M17 7V17" />
               </svg>
-            </button>
+            </a>
           </div>
         </section>
       );
@@ -553,13 +553,13 @@
             <p className="text-xl md:text-2xl text-stone-400 mb-12 font-light">
               Spaces are extremely limited. Applications are reviewed on a rolling basis.
             </p>
-            <button
-              onClick={handleApply}
-              className="bg-orange-600 hover:bg-orange-500 text-white px-12 py-6 rounded-full text-xl font-medium transition-all duration-300 hover:scale-105"
+            <a
+              href="https://luma.com/0gm0ouf3" target="_blank" rel="noopener"
+              className="bg-orange-600 hover:bg-orange-500 text-white px-12 py-6 rounded-full text-xl font-medium transition-all duration-300 hover:scale-105 inline-block"
               style={{ boxShadow: '0 0 40px -10px rgba(234,88,12,0.5)' }}
             >
-              {clicked ? 'Application Submitted! ✓' : 'Apply Now'}
-            </button>
+              Apply Now
+            </a>
           </div>
           <div className="mt-24 pt-8 border-t border-stone-800 text-center text-stone-500 text-sm">
             <span>Presented by <a href="https://x.com/aiweekendsxyz" target="_blank" rel="noopener noreferrer" style={{cursor:'pointer',position:'relative',zIndex:10}} className="underline hover:text-stone-300 transition-colors">AI Weekends</a> × <a href="https://x.com/innercircle_so" target="_blank" rel="noopener noreferrer" style={{cursor:'pointer',position:'relative',zIndex:10}} className="underline hover:text-stone-300 transition-colors">Inner Circle</a> · Bangalore, India</span>
