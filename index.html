@@ -419,34 +419,71 @@
       </section>
     );
 
-    const SpeakerCard = ({ name, role, bio, image, twitter }) => (
+    const LockedSpeakerCard = () => (
       <div className="flex flex-col items-center text-center gap-3">
-        <div className="w-36 h-36 rounded-full bg-stone-200 flex items-center justify-center text-stone-400 overflow-hidden">
-          {image ? <img src={image} alt={name} className="w-full h-full object-cover" /> : (
-            <svg className="w-14 h-14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-            </svg>
-          )}
+        <div className="w-36 h-36 rounded-full bg-stone-300/60 flex items-center justify-center text-stone-400">
+          <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+          </svg>
         </div>
         <div>
-          <p className="font-medium text-stone-900">{name}</p>
-          {bio && <p className="text-sm text-stone-500 mt-0.5">{bio}</p>}
-          <p className="text-sm text-stone-500 mt-0.5">{role}</p>
-          {twitter && <a href={twitter} target="_blank" rel="noopener" className="inline-block mt-2 text-stone-400 hover:text-stone-600 transition-colors"><svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>}
+          <p className="font-medium text-stone-400">To Be Announced</p>
         </div>
       </div>
     );
+
+    const CountdownTimer = () => {
+      const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
+      useEffect(() => {
+        const revealDate = new Date(Date.now() + 48 * 60 * 60 * 1000);
+        const stored = localStorage.getItem('speakerRevealDate');
+        const target = stored ? new Date(stored) : revealDate;
+        if (!stored) localStorage.setItem('speakerRevealDate', revealDate.toISOString());
+        const tick = () => {
+          const now = new Date();
+          const diff = Math.max(0, target - now);
+          setTimeLeft({
+            hours: Math.floor(diff / (1000 * 60 * 60)),
+            minutes: Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)),
+            seconds: Math.floor((diff % (1000 * 60)) / 1000),
+          });
+        };
+        tick();
+        const interval = setInterval(tick, 1000);
+        return () => clearInterval(interval);
+      }, []);
+      const pad = (n) => String(n).padStart(2, '0');
+      return (
+        <div className="flex items-center justify-center gap-4 mt-8">
+          <div className="flex flex-col items-center">
+            <span className="text-4xl md:text-5xl font-bold text-stone-900 font-mono">{pad(timeLeft.hours)}</span>
+            <span className="text-xs text-stone-400 uppercase tracking-wide mt-1">Hours</span>
+          </div>
+          <span className="text-3xl text-stone-300 font-light">:</span>
+          <div className="flex flex-col items-center">
+            <span className="text-4xl md:text-5xl font-bold text-stone-900 font-mono">{pad(timeLeft.minutes)}</span>
+            <span className="text-xs text-stone-400 uppercase tracking-wide mt-1">Minutes</span>
+          </div>
+          <span className="text-3xl text-stone-300 font-light">:</span>
+          <div className="flex flex-col items-center">
+            <span className="text-4xl md:text-5xl font-bold text-stone-900 font-mono">{pad(timeLeft.seconds)}</span>
+            <span className="text-xs text-stone-400 uppercase tracking-wide mt-1">Seconds</span>
+          </div>
+        </div>
+      );
+    };
 
     const SpeakersSection = () => (
       <section id="speakers" className="pt-12 pb-24 px-6 bg-[#faf7f2] text-center">
         <div className="max-w-4xl mx-auto">
           <span className="block text-orange-600 font-medium tracking-wide mb-2 uppercase text-sm">Line Up</span>
-          <h2 className="text-5xl md:text-6xl text-stone-900 mb-16" style={customStyles.editorialFont}>Speakers</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-10">
-            <SpeakerCard name="Ishika" bio="Product @ Morphic" role="" twitter="https://x.com/IshikaMukerji" image="https://pbs.twimg.com/profile_images/1971682226434670592/ErlQZLWa_400x400.jpg" />
-            <SpeakerCard name="Sumedha" bio="Marketing and Growth Lead @ Base India" role="" twitter="https://x.com/sumedha2199" image="https://pbs.twimg.com/profile_images/2016381985506394116/vMJlEeC1_400x400.jpg" />
-            <SpeakerCard name="Ahaan" bio="Builder & Markets Lead @ Base India" role="" twitter="https://x.com/AhaanRaizada" image="https://pbs.twimg.com/profile_images/1873606202137190401/zh-avKda_400x400.jpg" />
-            <SpeakerCard name="Kunal Gandhi" bio="CMO @ HeyElsa" role="" twitter="https://x.com/kunalvg" image="https://pbs.twimg.com/profile_images/1787714060999417856/XFybMJyn_400x400.jpg" />
+          <h2 className="text-5xl md:text-6xl text-stone-900 mb-6" style={customStyles.editorialFont}>Speakers</h2>
+          <CountdownTimer />
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-10 mt-16">
+            <LockedSpeakerCard />
+            <LockedSpeakerCard />
+            <LockedSpeakerCard />
+            <LockedSpeakerCard />
           </div>
         </div>
       </section>
