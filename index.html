@@ -471,24 +471,21 @@
       <section id="speakers" className="pt-8 pb-20 px-6 bg-[#faf7f2] text-center">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-5xl md:text-6xl text-stone-900 mb-10" style={customStyles.editorialFont}>Speakers in</h2>
-          {/* Cascading cards with lock */}
-          <div className="relative flex items-center justify-center" style={{height:'320px'}}>
-            {/* Back card (left) */}
-            <div className="absolute bg-white rounded-2xl shadow-sm border border-stone-200/60" style={{width:'220px',height:'180px',transform:'translateX(-40px) translateY(10px) rotate(-4deg)',zIndex:1,opacity:0.5}} />
-            {/* Back card (right) */}
-            <div className="absolute bg-white rounded-2xl shadow-sm border border-stone-200/60" style={{width:'220px',height:'180px',transform:'translateX(40px) translateY(10px) rotate(4deg)',zIndex:1,opacity:0.5}} />
+          {/* Cascading cards */}
+          <div className="relative flex items-center justify-center" style={{height:'300px'}}>
+            {/* Furthest back card */}
+            <div className="absolute rounded-3xl" style={{width:'200px',height:'160px',transform:'translateY(16px) scale(0.85)',zIndex:0,background:'#e7e5e4',boxShadow:'0 4px 20px rgba(0,0,0,0.04)'}} />
+            {/* Middle back cards */}
+            <div className="absolute rounded-3xl" style={{width:'240px',height:'180px',transform:'translateX(-30px) translateY(8px) rotate(-3deg)',zIndex:1,background:'#d6d3d1',boxShadow:'0 4px 24px rgba(0,0,0,0.06)'}} />
+            <div className="absolute rounded-3xl" style={{width:'240px',height:'180px',transform:'translateX(30px) translateY(8px) rotate(3deg)',zIndex:1,background:'#d6d3d1',boxShadow:'0 4px 24px rgba(0,0,0,0.06)'}} />
             {/* Hero card */}
-            <div className="relative bg-white rounded-2xl shadow-xl flex flex-col items-center justify-center gap-5" style={{width:'260px',height:'240px',zIndex:2,border:'2px solid #ea580c'}}>
-              {/* Lock icon */}
-              <div className="w-16 h-16 rounded-full bg-stone-100 flex items-center justify-center text-orange-600">
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
-                </svg>
-              </div>
-              {/* Placeholder lines */}
-              <div className="flex flex-col items-center gap-2">
-                <div className="w-24 h-2.5 bg-stone-200 rounded-full" />
-                <div className="w-16 h-2 bg-stone-100 rounded-full" />
+            <div className="relative rounded-3xl flex flex-col items-center justify-center gap-6" style={{width:'280px',height:'220px',zIndex:2,background:'white',boxShadow:'0 8px 40px rgba(0,0,0,0.08)'}}>
+              {/* Blurred question mark */}
+              <span className="text-6xl font-bold select-none" style={{color:'#ea580c',opacity:0.15,filter:'blur(2px)',letterSpacing:'8px'}}>???</span>
+              {/* Skeleton lines */}
+              <div className="flex flex-col items-center gap-2.5">
+                <div className="w-28 h-3 rounded-full" style={{background:'linear-gradient(90deg, #e7e5e4, #d6d3d1, #e7e5e4)',backgroundSize:'200% 100%',animation:'shimmer 2s infinite'}} />
+                <div className="w-20 h-2.5 rounded-full" style={{background:'linear-gradient(90deg, #e7e5e4, #d6d3d1, #e7e5e4)',backgroundSize:'200% 100%',animation:'shimmer 2s infinite 0.3s'}} />
               </div>
             </div>
           </div>
@@ -664,6 +661,7 @@
           ::-webkit-scrollbar-thumb { background: #e7e5e4; border-radius: 4px; }
           ::-webkit-scrollbar-thumb:hover { background: #d6d3d1; }
           @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+          @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
           .partner-logo { filter: grayscale(100%); opacity: 0.5; transition: filter 0.3s ease, opacity 0.3s ease; }
           .partner-logo:hover { filter: grayscale(0%); opacity: 1; }
           .partner-logo-invert { filter: invert(1) grayscale(100%); opacity: 0.5; transition: filter 0.3s ease, opacity 0.3s ease; }
