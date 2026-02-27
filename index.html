@@ -467,12 +467,18 @@
       );
     };
 
-    const BlurredSpeakerCard = ({ name, bio }) => (
+    const BlurredSpeakerCard = ({ name, bio, image }) => (
       <div className="flex flex-col items-center text-center gap-3 flex-shrink-0" style={{width:'180px'}}>
-        <div className="w-32 h-32 rounded-full bg-stone-300" style={{filter:'blur(8px)'}} />
-        <div style={{filter:'blur(6px)'}}>
-          <p className="font-medium text-stone-700">{name}</p>
-          <p className="text-sm text-stone-500 mt-0.5">{bio}</p>
+        <div className="w-32 h-32 rounded-full overflow-hidden">
+          {image ? (
+            <img src={image} alt="" className="w-full h-full object-cover" style={{filter:'blur(10px)',transform:'scale(1.15)'}} />
+          ) : (
+            <div className="w-full h-full bg-stone-300" style={{filter:'blur(10px)'}} />
+          )}
+        </div>
+        <div>
+          <p className="font-medium text-stone-700" style={{filter:'blur(5px)'}}>{name}</p>
+          <p className="text-sm text-stone-500 mt-0.5" style={{filter:'blur(5px)'}}>{bio}</p>
         </div>
       </div>
     );
