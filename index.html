@@ -473,19 +473,17 @@
           <h2 className="text-5xl md:text-6xl text-stone-900 mb-10" style={customStyles.editorialFont}>Speakers in</h2>
           {/* Cascading cards */}
           <div className="relative flex items-center justify-center" style={{height:'300px'}}>
-            {/* Furthest back card */}
-            <div className="absolute rounded-3xl" style={{width:'200px',height:'160px',transform:'translateY(16px) scale(0.85)',zIndex:0,background:'#e7e5e4',boxShadow:'0 4px 20px rgba(0,0,0,0.04)'}} />
-            {/* Middle back cards */}
-            <div className="absolute rounded-3xl" style={{width:'240px',height:'180px',transform:'translateX(-30px) translateY(8px) rotate(-3deg)',zIndex:1,background:'#d6d3d1',boxShadow:'0 4px 24px rgba(0,0,0,0.06)'}} />
-            <div className="absolute rounded-3xl" style={{width:'240px',height:'180px',transform:'translateX(30px) translateY(8px) rotate(3deg)',zIndex:1,background:'#d6d3d1',boxShadow:'0 4px 24px rgba(0,0,0,0.06)'}} />
+            {/* Back cards — white, subtle shadows for depth */}
+            <div className="absolute rounded-3xl" style={{width:'220px',height:'170px',transform:'translateX(-35px) translateY(12px) rotate(-3deg)',zIndex:0,background:'white',boxShadow:'0 2px 12px rgba(0,0,0,0.04)'}} />
+            <div className="absolute rounded-3xl" style={{width:'220px',height:'170px',transform:'translateX(35px) translateY(12px) rotate(3deg)',zIndex:0,background:'white',boxShadow:'0 2px 12px rgba(0,0,0,0.04)'}} />
             {/* Hero card */}
-            <div className="relative rounded-3xl flex flex-col items-center justify-center gap-6" style={{width:'280px',height:'220px',zIndex:2,background:'white',boxShadow:'0 8px 40px rgba(0,0,0,0.08)'}}>
+            <div className="relative rounded-3xl flex flex-col items-center justify-center gap-6" style={{width:'280px',height:'220px',zIndex:1,background:'white',boxShadow:'0 4px 30px rgba(0,0,0,0.07)'}}>
               {/* Blurred question mark */}
-              <span className="text-6xl font-bold select-none" style={{color:'#ea580c',opacity:0.15,filter:'blur(2px)',letterSpacing:'8px'}}>???</span>
-              {/* Skeleton lines */}
+              <span className="text-6xl font-bold select-none" style={{color:'#ea580c',opacity:0.12,filter:'blur(2px)',letterSpacing:'8px'}}>???</span>
+              {/* Shimmer skeleton lines */}
               <div className="flex flex-col items-center gap-2.5">
-                <div className="w-28 h-3 rounded-full" style={{background:'linear-gradient(90deg, #e7e5e4, #d6d3d1, #e7e5e4)',backgroundSize:'200% 100%',animation:'shimmer 2s infinite'}} />
-                <div className="w-20 h-2.5 rounded-full" style={{background:'linear-gradient(90deg, #e7e5e4, #d6d3d1, #e7e5e4)',backgroundSize:'200% 100%',animation:'shimmer 2s infinite 0.3s'}} />
+                <div className="w-28 h-3 rounded-full" style={{background:'linear-gradient(90deg, #f0eeeb, #e7e5e2, #f0eeeb)',backgroundSize:'200% 100%',animation:'shimmer 2s infinite'}} />
+                <div className="w-20 h-2.5 rounded-full" style={{background:'linear-gradient(90deg, #f0eeeb, #e7e5e2, #f0eeeb)',backgroundSize:'200% 100%',animation:'shimmer 2s infinite 0.3s'}} />
               </div>
             </div>
           </div>
