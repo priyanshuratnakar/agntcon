@@ -453,17 +453,17 @@
       return (
         <div className="flex items-center justify-center gap-4 mt-8">
           <div className="flex flex-col items-center">
-            <span className="text-4xl md:text-5xl font-bold text-stone-900 font-mono">{pad(timeLeft.hours)}</span>
+            <span className="text-4xl md:text-5xl font-bold text-stone-900" style={customStyles.editorialFont}>{pad(timeLeft.hours)}</span>
             <span className="text-xs text-stone-400 uppercase tracking-wide mt-1">Hours</span>
           </div>
           <span className="text-3xl text-stone-300 font-light">:</span>
           <div className="flex flex-col items-center">
-            <span className="text-4xl md:text-5xl font-bold text-stone-900 font-mono">{pad(timeLeft.minutes)}</span>
+            <span className="text-4xl md:text-5xl font-bold text-stone-900" style={customStyles.editorialFont}>{pad(timeLeft.minutes)}</span>
             <span className="text-xs text-stone-400 uppercase tracking-wide mt-1">Minutes</span>
           </div>
           <span className="text-3xl text-stone-300 font-light">:</span>
           <div className="flex flex-col items-center">
-            <span className="text-4xl md:text-5xl font-bold text-stone-900 font-mono">{pad(timeLeft.seconds)}</span>
+            <span className="text-4xl md:text-5xl font-bold text-stone-900" style={customStyles.editorialFont}>{pad(timeLeft.seconds)}</span>
             <span className="text-xs text-stone-400 uppercase tracking-wide mt-1">Seconds</span>
           </div>
         </div>
