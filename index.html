@@ -388,7 +388,7 @@
 
     const StatCard = ({ value, label }) => (
       <div className="bg-white p-8 md:p-10 flex flex-col items-center text-center hover:bg-stone-50 transition-colors">
-        <span className="text-4xl md:text-5xl font-bold text-stone-900 mb-2">{value}</span>
+        <span className="text-4xl md:text-5xl font-bold text-orange-600 mb-2">{value}</span>
         <span className="text-sm text-stone-500 font-medium uppercase tracking-wide">{label}</span>
       </div>
     );
@@ -450,17 +450,17 @@
       return (
         <div className="flex items-center justify-center gap-4 mt-8">
           <div className="flex flex-col items-center">
-            <span className="text-4xl md:text-5xl font-bold text-stone-900" style={customStyles.editorialFont}>{pad(timeLeft.hours)}</span>
+            <span className="text-4xl md:text-5xl font-bold text-orange-600" style={customStyles.editorialFont}>{pad(timeLeft.hours)}</span>
             <span className="text-xs text-stone-400 uppercase tracking-wide mt-1">Hours</span>
           </div>
           <span className="text-3xl text-stone-300 font-light">:</span>
           <div className="flex flex-col items-center">
-            <span className="text-4xl md:text-5xl font-bold text-stone-900" style={customStyles.editorialFont}>{pad(timeLeft.minutes)}</span>
+            <span className="text-4xl md:text-5xl font-bold text-orange-600" style={customStyles.editorialFont}>{pad(timeLeft.minutes)}</span>
             <span className="text-xs text-stone-400 uppercase tracking-wide mt-1">Minutes</span>
           </div>
           <span className="text-3xl text-stone-300 font-light">:</span>
           <div className="flex flex-col items-center">
-            <span className="text-4xl md:text-5xl font-bold text-stone-900" style={customStyles.editorialFont}>{pad(timeLeft.seconds)}</span>
+            <span className="text-4xl md:text-5xl font-bold text-orange-600" style={customStyles.editorialFont}>{pad(timeLeft.seconds)}</span>
             <span className="text-xs text-stone-400 uppercase tracking-wide mt-1">Seconds</span>
           </div>
         </div>
@@ -470,7 +470,7 @@
     const SpeakersSection = () => (
       <section id="speakers" className="pt-8 pb-20 px-6 bg-[#faf7f2] text-center">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-5xl md:text-6xl text-orange-600 mb-6" style={customStyles.editorialFont}>Speakers in</h2>
+          <h2 className="text-5xl md:text-6xl text-stone-900 mb-6" style={customStyles.editorialFont}>Speakers in</h2>
           <CountdownTimer />
         </div>
       </section>
