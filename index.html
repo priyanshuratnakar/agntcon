@@ -502,7 +502,7 @@
           <div className="w-full overflow-hidden mt-12" style={{maskImage:'linear-gradient(to right, transparent, black 10%, black 90%, transparent)', WebkitMaskImage:'linear-gradient(to right, transparent, black 10%, black 90%, transparent)'}}>
             <div className="flex gap-12 items-start" style={{animation:'speakerMarquee 20s linear infinite',width:'max-content'}}>
               {doubled.map((s, i) => (
-                <BlurredSpeakerCard key={i} name={s.name} bio={s.bio} />
+                <BlurredSpeakerCard key={i} name={s.name} bio={s.bio} image={s.image} />
               ))}
             </div>
           </div>
