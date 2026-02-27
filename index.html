@@ -435,10 +435,7 @@
     const CountdownTimer = () => {
       const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
       useEffect(() => {
-        const revealDate = new Date(Date.now() + 48 * 60 * 60 * 1000);
-        const stored = localStorage.getItem('speakerRevealDate');
-        const target = stored ? new Date(stored) : revealDate;
-        if (!stored) localStorage.setItem('speakerRevealDate', revealDate.toISOString());
+        const target = new Date('2026-03-01T13:00:00Z');
         const tick = () => {
           const now = new Date();
           const diff = Math.max(0, target - now);
