@@ -467,30 +467,42 @@
       );
     };
 
-    const SpeakersSection = () => (
-      <section id="speakers" className="pt-8 pb-20 px-6 bg-[#faf7f2] text-center">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-5xl md:text-6xl text-stone-900 mb-10" style={customStyles.editorialFont}>Speakers in</h2>
-          {/* Cascading cards */}
-          <div className="relative flex items-center justify-center" style={{height:'300px'}}>
-            {/* Back cards — white, subtle shadows for depth */}
-            <div className="absolute rounded-3xl" style={{width:'220px',height:'170px',transform:'translateX(-35px) translateY(12px) rotate(-3deg)',zIndex:0,background:'white',boxShadow:'0 2px 12px rgba(0,0,0,0.04)'}} />
-            <div className="absolute rounded-3xl" style={{width:'220px',height:'170px',transform:'translateX(35px) translateY(12px) rotate(3deg)',zIndex:0,background:'white',boxShadow:'0 2px 12px rgba(0,0,0,0.04)'}} />
-            {/* Hero card */}
-            <div className="relative rounded-3xl flex flex-col items-center justify-center gap-6" style={{width:'280px',height:'220px',zIndex:1,background:'white',boxShadow:'0 4px 30px rgba(0,0,0,0.07)'}}>
-              {/* Blurred question mark */}
-              <span className="text-6xl font-bold select-none" style={{color:'#ea580c',opacity:0.12,filter:'blur(2px)',letterSpacing:'8px'}}>???</span>
-              {/* Shimmer skeleton lines */}
-              <div className="flex flex-col items-center gap-2.5">
-                <div className="w-28 h-3 rounded-full" style={{background:'linear-gradient(90deg, #f0eeeb, #e7e5e2, #f0eeeb)',backgroundSize:'200% 100%',animation:'shimmer 2s infinite'}} />
-                <div className="w-20 h-2.5 rounded-full" style={{background:'linear-gradient(90deg, #f0eeeb, #e7e5e2, #f0eeeb)',backgroundSize:'200% 100%',animation:'shimmer 2s infinite 0.3s'}} />
-              </div>
+    const BlurredSpeakerCard = ({ name, bio }) => (
+      <div className="flex flex-col items-center text-center gap-3 flex-shrink-0" style={{width:'180px'}}>
+        <div className="w-32 h-32 rounded-full bg-stone-300" style={{filter:'blur(8px)'}} />
+        <div style={{filter:'blur(6px)'}}>
+          <p className="font-medium text-stone-700">{name}</p>
+          <p className="text-sm text-stone-500 mt-0.5">{bio}</p>
+        </div>
+      </div>
+    );
+
+    const SpeakersSection = () => {
+      const speakers = [
+        { name: 'Speaker One', bio: 'CEO @ Stealth' },
+        { name: 'Speaker Two', bio: 'Founder @ Protocol' },
+        { name: 'Speaker Three', bio: 'CTO @ AgentLab' },
+        { name: 'Speaker Four', bio: 'Partner @ Ventures' },
+        { name: 'Speaker Five', bio: 'Head of AI @ Studio' },
+        { name: 'Speaker Six', bio: 'Lead @ Foundation' },
+      ];
+      const doubled = [...speakers, ...speakers];
+      return (
+        <section id="speakers" className="pt-8 pb-20 px-6 bg-[#faf7f2] text-center overflow-hidden">
+          <div className="max-w-4xl mx-auto mb-10">
+            <h2 className="text-5xl md:text-6xl text-stone-900 mb-6" style={customStyles.editorialFont}>Speakers in</h2>
+            <CountdownTimer />
+          </div>
+          <div className="w-full overflow-hidden mt-12" style={{maskImage:'linear-gradient(to right, transparent, black 10%, black 90%, transparent)', WebkitMaskImage:'linear-gradient(to right, transparent, black 10%, black 90%, transparent)'}}>
+            <div className="flex gap-12 items-start" style={{animation:'speakerMarquee 20s linear infinite',width:'max-content'}}>
+              {doubled.map((s, i) => (
+                <BlurredSpeakerCard key={i} name={s.name} bio={s.bio} />
+              ))}
             </div>
           </div>
-          <CountdownTimer />
-        </div>
-      </section>
-    );
+        </section>
+      );
+    };
 
     const PartnersSection = () => (
       <section id="partners" className="py-20 px-6 bg-stone-100 text-center">
@@ -660,6 +672,7 @@
           ::-webkit-scrollbar-thumb:hover { background: #d6d3d1; }
           @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
           @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+          @keyframes speakerMarquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
           .partner-logo { filter: grayscale(100%); opacity: 0.5; transition: filter 0.3s ease, opacity 0.3s ease; }
           .partner-logo:hover { filter: grayscale(0%); opacity: 1; }
           .partner-logo-invert { filter: invert(1) grayscale(100%); opacity: 0.5; transition: filter 0.3s ease, opacity 0.3s ease; }
