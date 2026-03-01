@@ -349,7 +349,7 @@
                 { text:true, name:'AI Grants India', h:'28px' },
               ].map((p, i) => (
                 p.text
-                  ? <span key={i} className="partner-logo flex-shrink-0" style={{fontSize:p.h, fontWeight:700, letterSpacing:'-0.02em', lineHeight:1}}>{p.name}</span>
+                  ? <span key={i} className="partner-logo flex-shrink-0" style={{fontSize:'18px', fontWeight:700, letterSpacing:'-0.02em', lineHeight:1, height:p.h, display:'flex', alignItems:'center'}}>{p.name}</span>
                   : <img key={i} src={p.src} alt={p.name} className={`${p.invert ? 'partner-logo-invert' : 'partner-logo'} flex-shrink-0`} style={{height:p.h, width:'auto'}} />
               ))}
             </div>
