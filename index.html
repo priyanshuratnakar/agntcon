@@ -331,7 +331,7 @@
             </a>
           </div>
           <div className="w-full overflow-hidden" style={{maskImage:'linear-gradient(to right, transparent, black 15%, black 85%, transparent)', WebkitMaskImage:'linear-gradient(to right, transparent, black 15%, black 85%, transparent)'}}>
-            <div className="marquee-track flex gap-20 items-center whitespace-nowrap" style={{animation:'marquee 28s linear infinite'}}>
+            <div id="marqueeTrack" className="marquee-track flex gap-20 items-center whitespace-nowrap">
               {[
                 { src:'https://growthx.club/_next_public/logo/growthx-light-mode.svg', name:'GrowthX', h:'32px' },
                 { src:'/machete-logo.svg', name:'Machete', h:'28px' },
@@ -689,20 +689,56 @@
           ::-webkit-scrollbar-track { background: #faf7f2; }
           ::-webkit-scrollbar-thumb { background: #e7e5e4; border-radius: 4px; }
           ::-webkit-scrollbar-thumb:hover { background: #d6d3d1; }
-          @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
           @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
           @keyframes speakerMarquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
           .partner-logo { filter: grayscale(100%); opacity: 0.5; transition: filter 0.3s ease, opacity 0.3s ease; }
           .partner-logo:hover { filter: grayscale(0%); opacity: 1; }
           .partner-logo-invert { filter: invert(1) grayscale(100%); opacity: 0.5; transition: filter 0.3s ease, opacity 0.3s ease; }
           .partner-logo-invert:hover { filter: invert(1); opacity: 1; }
-          .marquee-track:hover { animation-play-state: paused; }
+          .marquee-track { cursor: grab; user-select: none; -webkit-user-select: none; }
+          .marquee-track:active { cursor: grabbing; }
         `;
         document.head.appendChild(style);
         const threeScript = document.createElement('script');
         threeScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
         threeScript.async = true;
         document.head.appendChild(threeScript);
+        // Marquee drag/swipe + auto-scroll
+        const initMarquee = () => {
+          const track = document.getElementById('marqueeTrack');
+          if (!track) return requestAnimationFrame(initMarquee);
+          let pos = 0, dragging = false, startX = 0, dragStart = 0, velocity = 0, lastX = 0, lastT = 0;
+          const speed = 0.5; // px per frame auto-scroll
+          const half = () => track.scrollWidth / 2;
+
+          const wrap = () => { if (pos <= -half()) pos += half(); if (pos > 0) pos -= half(); };
+          const setPos = () => { track.style.transform = 'translateX(' + pos + 'px)'; };
+
+          // Auto-scroll loop
+          let raf;
+          const tick = () => {
+            if (!dragging) {
+              pos -= speed + velocity;
+              velocity *= 0.95;
+              if (Math.abs(velocity) < 0.1) velocity = 0;
+            }
+            wrap(); setPos();
+            raf = requestAnimationFrame(tick);
+          };
+          raf = requestAnimationFrame(tick);
+
+          // Mouse events
+          track.addEventListener('mousedown', e => { dragging = true; startX = e.clientX; dragStart = pos; lastX = e.clientX; lastT = Date.now(); e.preventDefault(); });
+          window.addEventListener('mousemove', e => { if (!dragging) return; const dx = e.clientX - startX; pos = dragStart + dx; const now = Date.now(); const dt = now - lastT; if (dt > 0) velocity = -(e.clientX - lastX) / dt * 16; lastX = e.clientX; lastT = now; });
+          window.addEventListener('mouseup', () => { dragging = false; });
+
+          // Touch events
+          track.addEventListener('touchstart', e => { dragging = true; startX = e.touches[0].clientX; dragStart = pos; lastX = startX; lastT = Date.now(); }, { passive: true });
+          window.addEventListener('touchmove', e => { if (!dragging) return; const dx = e.touches[0].clientX - startX; pos = dragStart + dx; const now = Date.now(); const dt = now - lastT; if (dt > 0) velocity = -(e.touches[0].clientX - lastX) / dt * 16; lastX = e.touches[0].clientX; lastT = now; }, { passive: true });
+          window.addEventListener('touchend', () => { dragging = false; });
+        };
+        initMarquee();
+
         return () => { document.head.removeChild(style); };
       }, []);
       return <HomePage />;
