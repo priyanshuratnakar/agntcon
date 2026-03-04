@@ -443,7 +443,7 @@
     const CountdownTimer = () => {
       const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
       useEffect(() => {
-        const target = new Date('2026-03-03T13:00:00Z');
+        const target = new Date('2026-03-04T10:30:00Z');
         const tick = () => {
           const now = new Date();
           const diff = Math.max(0, target - now);
