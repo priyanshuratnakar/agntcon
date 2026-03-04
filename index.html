@@ -479,7 +479,7 @@
     };
 
     const SpeakerCard = ({ name, bio, twitter, image }) => (
-      <div className="flex flex-col items-center text-center gap-3">
+      <div className="flex flex-col items-center text-center gap-3 flex-shrink-0" style={{width:'180px'}}>
         <div className="w-32 h-32 rounded-full overflow-hidden">
           <img src={image} alt={name} className="w-full h-full object-cover" />
         </div>
@@ -508,34 +508,32 @@
     );
 
     const SpeakersSection = () => {
-      const speakers = [
+      const revealed = [
+        { name: 'Ishika', bio: 'Product @ Morphic', twitter: 'https://x.com/IshikaMukerji', image: 'https://pbs.twimg.com/profile_images/1971682226434670592/ErlQZLWa_400x400.jpg' },
+        { name: 'Sumedha', bio: 'Marketing and Growth Lead @ Base India', twitter: 'https://x.com/sumedha2199', image: 'https://pbs.twimg.com/profile_images/2016381985506394116/vMJlEeC1_400x400.jpg' },
+        { name: 'Ahaan', bio: 'Builder & Markets Lead @ Base India', twitter: 'https://x.com/AhaanRaizada', image: 'https://pbs.twimg.com/profile_images/1873606202137190401/zh-avKda_400x400.jpg' },
+        { name: 'Kunal Gandhi', bio: 'CMO @ HeyElsa', twitter: 'https://x.com/kunalvg', image: 'https://pbs.twimg.com/profile_images/1787714060999417856/XFybMJyn_400x400.jpg' },
+      ];
+      const blurred = [
         { name: 'Speaker One', bio: 'CEO @ Stealth', image: '/speaker-placeholder.jpg' },
         { name: 'Speaker Two', bio: 'Founder @ Protocol', image: '/speaker-placeholder.jpg' },
         { name: 'Speaker Three', bio: 'CTO @ AgentLab', image: '/speaker-placeholder.jpg' },
         { name: 'Speaker Four', bio: 'Partner @ Ventures', image: '/speaker-placeholder.jpg' },
-        { name: 'Speaker Five', bio: 'Head of AI @ Studio', image: '/speaker-placeholder.jpg' },
-        { name: 'Speaker Six', bio: 'Lead @ Foundation', image: '/speaker-placeholder.jpg' },
       ];
+      const speakers = [...revealed.map(s => ({...s, revealed: true})), ...blurred.map(s => ({...s, revealed: false}))];
       const doubled = [...speakers, ...speakers];
       return (
         <section id="speakers" className="pt-8 pb-32 px-6 bg-[#faf7f2] text-center overflow-hidden">
           <div className="max-w-4xl mx-auto mb-10">
-            <h2 className="text-5xl md:text-6xl text-stone-900 mb-16" style={customStyles.editorialFont}>Speakers</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-10">
-              <SpeakerCard name="Ishika" bio="Product @ Morphic" twitter="https://x.com/IshikaMukerji" image="https://pbs.twimg.com/profile_images/1971682226434670592/ErlQZLWa_400x400.jpg" />
-              <SpeakerCard name="Sumedha" bio="Marketing and Growth Lead @ Base India" twitter="https://x.com/sumedha2199" image="https://pbs.twimg.com/profile_images/2016381985506394116/vMJlEeC1_400x400.jpg" />
-              <SpeakerCard name="Ahaan" bio="Builder & Markets Lead @ Base India" twitter="https://x.com/AhaanRaizada" image="https://pbs.twimg.com/profile_images/1873606202137190401/zh-avKda_400x400.jpg" />
-              <SpeakerCard name="Kunal Gandhi" bio="CMO @ HeyElsa" twitter="https://x.com/kunalvg" image="https://pbs.twimg.com/profile_images/1787714060999417856/XFybMJyn_400x400.jpg" />
-            </div>
-          </div>
-          <div className="max-w-4xl mx-auto mt-16 mb-6">
-            <p className="text-lg text-stone-500" style={customStyles.editorialFont}>More speakers in</p>
+            <h2 className="text-5xl md:text-6xl text-stone-900 mb-6" style={customStyles.editorialFont}>Speakers in</h2>
             <CountdownTimer />
           </div>
           <div className="w-full overflow-hidden mt-12" style={{maskImage:'linear-gradient(to right, transparent, black 10%, black 90%, transparent)', WebkitMaskImage:'linear-gradient(to right, transparent, black 10%, black 90%, transparent)'}}>
             <div className="flex gap-12 items-start" style={{animation:'speakerMarquee 20s linear infinite',width:'max-content'}}>
               {doubled.map((s, i) => (
-                <BlurredSpeakerCard key={i} name={s.name} bio={s.bio} image={s.image} />
+                s.revealed
+                  ? <SpeakerCard key={i} name={s.name} bio={s.bio} twitter={s.twitter} image={s.image} />
+                  : <BlurredSpeakerCard key={i} name={s.name} bio={s.bio} image={s.image} />
               ))}
             </div>
           </div>
